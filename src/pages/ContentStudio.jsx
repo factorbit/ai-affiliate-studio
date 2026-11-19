@@ -16,40 +16,52 @@ const tones = {
 }
 
 function makeContent(product, angle, duration, tone) {
-  const name = product.name
-  const category = product.category?.trim() || 'produk ini'
-  const isHair = /rambut|hair|shampoo|sampo|conditioner|serum rambut|hairgrow/i.test(name + ' ' + category)
-  const playfulHook = isHair
-    ? 'Rambut kalau bisa ngomong mungkin udah teriak: “Tolong, rawat aku yang bener!” 😭'
-    : 'Scroll boleh, tapi jangan sampai kelewatan kenalan sama ' + name + ' ini! 😭'
-  const hooks = {
-    playful: playfulHook,
-    soft: 'Lagi cari ' + category.toLowerCase() + ' yang bisa masuk rutinitasmu? Coba kenalan dengan ' + name + '.',
-    honest: 'Sebelum ikut-ikutan beli ' + name + ', yuk kita cek dulu detail produknya.',
-    hard: 'Buat kamu yang sedang mencari ' + category.toLowerCase() + ', intip dulu ' + name + ' ini!',
+  const name = product.name?.trim() || 'produk ini'
+  const category = product.category?.trim() || 'produk pilihan'
+  const kind = category.toLowerCase()
+  const hair = /rambut|hair|kecantikan|beauty|skincare|make.?up|kosmetik/i.test(kind + ' ' + name)
+  const fashion = /fashion|pakaian|baju|sepatu|tas|aksesoris|aksesoris/i.test(kind)
+  const tech = /elektronik|gadget|handphone|komputer|audio|aksesoris hp/i.test(kind)
+  const home = /rumah|dapur|perabot|home|kebersihan/i.test(kind)
+  const food = /makanan|minuman|snack|cemilan|kuliner/i.test(kind)
+
+  const openers = {
+    playful: hair
+      ? 'Jujur, urusan merawat diri tuh kadang bikin banyak pertanyaan. Mulai dari mana dulu, sih? 😭'
+      : fashion
+        ? 'Pernah nggak, sudah punya banyak outfit tapi tetap merasa nggak punya baju? 😭'
+        : tech
+          ? 'Kalau ada barang yang bikin aktivitas lebih praktis, pasti langsung masuk daftar kepo, kan? 👀'
+          : home
+            ? 'Siapa yang suka tergoda barang yang katanya bisa bikin urusan rumah lebih gampang? Ngaku! 😭'
+            : food
+              ? 'Lagi pengin nyobain sesuatu yang baru, tapi bingung mau pilih apa? 👀'
+              : 'Eh, berhenti scroll sebentar! Ada satu produk yang mau aku ajak kamu kepoin. 😭',
+    soft: 'Aku mau berbagi satu produk yang mungkin menarik buat kamu yang sedang mencari ' + kind + '.',
+    honest: 'Sebelum memutuskan membeli sesuatu, ada baiknya kita kenali dulu produknya. Kali ini kita bahas ' + name + '.',
+    hard: 'Lagi cari ' + kind + '? Yuk, luangkan sebentar untuk kenalan dengan ' + name + '!',
   }
-  const middleByAngle = {
-    problem: isHair
-      ? 'Rambut punya kebutuhan yang berbeda-beda, jadi jangan asal ikut rekomendasi orang. Kenali dulu kondisi rambut dan kulit kepalamu, lalu cek kandungan serta petunjuk pemakaian produk ini.'
-      : 'Setiap orang punya kebutuhan yang berbeda. Kenali dulu kebutuhanmu, lalu cek apakah detail dan spesifikasi produk ini memang sesuai.',
-    benefit: 'Kenalan lebih dekat dengan ' + name + '. Cek informasi produk, kandungan atau bahan, serta cara pakainya supaya kamu tahu apa yang akan kamu gunakan.',
-    review: 'Jangan cuma lihat kemasannya. Perhatikan informasi produk, bahan atau kandungannya, petunjuk pemakaian, dan ulasan pembeli. Sesuaikan dengan kebutuhanmu sebelum memutuskan.',
-    deal: 'Kalau produknya menarik perhatianmu, buka halaman produknya untuk melihat varian, informasi lengkap, dan promo yang sedang tersedia.',
+  const story = {
+    problem: hair
+      ? 'Memilih produk perawatan itu nggak bisa asal ikut tren. Kebutuhan setiap orang berbeda, jadi penting untuk membaca informasi, mengenali kebutuhan diri, dan memahami cara pakainya.'
+      : 'Sering kali kita tertarik pada suatu barang, tapi belum tentu benar-benar membutuhkannya. Coba pikirkan kebutuhanmu, lalu cocokkan dengan informasi dan fungsi produk yang dijelaskan penjual.',
+    benefit: 'Daripada cuma melihat tampilannya, yuk kenali ' + name + ' lebih dekat. Perhatikan fungsi, detail, bahan atau spesifikasinya, lalu bayangkan apakah memang sesuai dengan kebutuhan sehari-hari.',
+    review: 'Aku nggak mau asal bilang produk ini bagus. Yang perlu kamu cek adalah detail produk, bahan atau spesifikasi, cara penggunaan, serta pengalaman pembeli lain. Cocok atau tidaknya tetap bergantung pada kebutuhan masing-masing.',
+    deal: 'Kalau dari awal sudah menarik perhatianmu, jangan buru-buru checkout. Buka halaman produknya, lihat pilihan yang tersedia, baca ulasan, dan pastikan detailnya sesuai.',
   }
   const endings = {
-    playful: 'Jadi, jangan asal tergoda kemasan, bestie. Cek detailnya dulu, baru putuskan. 😭',
-    soft: 'Kalau informasinya sesuai dengan yang kamu cari, kamu bisa mempertimbangkannya sebagai salah satu pilihan.',
-    honest: 'Selalu cek detail dan ulasan pembeli. Pilih berdasarkan kebutuhanmu, bukan sekadar ikut tren.',
-    hard: 'Yuk, cek detail produknya sekarang dan tentukan apakah ini yang kamu cari!',
+    playful: 'Intinya, jangan cuma keracunan karena lihat videonya. Kepoin detailnya dulu, baru tentukan pilihan. 😆',
+    soft: 'Kalau setelah melihat detailnya kamu merasa produk ini sesuai, silakan pertimbangkan sebagai salah satu pilihan.',
+    honest: 'Cek informasi dan ulasannya terlebih dahulu. Belanja sesuai kebutuhan selalu lebih baik daripada ikut-ikutan.',
+    hard: 'Kalau penasaran, langsung cek halaman produknya dan lihat sendiri detail lengkapnya!',
   }
-  const hook = hooks[tone] || hooks.playful
-  const body = middleByAngle[angle] || middleByAngle.benefit
+  const hook = openers[tone] || openers.playful
+  const body = story[angle] || story.benefit
   const ending = endings[tone] || endings.soft
-  const script = hook + '\\n\\n' + body + '\\n\\n' + ending
-  const caption = name + ' ✨ ' + (isHair
-    ? 'Yuk lebih teliti memilih produk perawatan rambut. Kenali kebutuhan rambutmu dan cek detail produknya sebelum mencoba.'
-    : 'Kenali detail produknya dan pastikan sesuai dengan kebutuhanmu sebelum membeli.')
-  return { hook, script, caption, hashtags: '#affiliate #rekomendasiproduk #racunbelanja #tiktokshop #shopeehaul', duration: Number(duration) }
+  const script = hook + '\n\n' + body + '\n\n' + ending
+  const caption = name + ' ✨\nLagi cari referensi sebelum memutuskan beli? Kenali dulu detail, fungsi, dan ulasan produk ini. Pilih yang paling sesuai dengan kebutuhanmu.'
+  const tags = '#affiliate #rekomendasiproduk #racunbelanja #belanjapintar'
+  return { hook, script, caption, hashtags: tags, duration: Number(duration) }
 }
 
 export default function ContentStudio({ user }) {
@@ -124,7 +136,7 @@ export default function ContentStudio({ user }) {
             <select value={duration} onChange={e => setDuration(e.target.value)}><option value="15">15 detik</option><option value="30">30 detik</option><option value="60">60 detik</option></select>
           </label>
         </div>
-        {selected && <div className="content-product-summary"><b>{selected.name}</b><span>{selected.platform}{selected.price == null ? '' : ' · '+money(selected.price)}{selected.category ? ' · '+selected.category : ''}</span></div>}
+        {selected && <div className="content-product-summary"><b>{selected.name}</b><span>{selected.platform}{selected.category ? ' · '+selected.category : ''}</span></div>}
         <button className="primary-button" onClick={generate}><Sparkles size={15}/> Buat draft konten</button>
       </>}
     </section>
