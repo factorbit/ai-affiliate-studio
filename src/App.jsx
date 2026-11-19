@@ -8,6 +8,8 @@ import Placeholder from './pages/Placeholder'
 import Auth from './pages/Auth'
 import ProductsPage from './pages/ProductsPage'
 import ContentStudio from './pages/ContentStudio'
+import CampaignsPage from './pages/CampaignsPage'
+import AnalyticsPage from './pages/AnalyticsPage'
 
 const titles = { dashboard: 'Dashboard', research: 'Riset Produk', content: 'Studio Konten AI', campaigns: 'Kampanye', analytics: 'Analitik Affiliate', assistant: 'Asisten AI', settings: 'Pengaturan' }
 
@@ -33,7 +35,7 @@ export default function App() {
     <main className="main-area">
       <Header title={titles[page]} onMenu={() => setMenuOpen(true)}/>
       <div className="content-area">
-        {page === 'dashboard' ? <Dashboard setPage={setPage}/> : page === 'research' ? <ProductsPage user={session.user}/> : page === 'content' ? <ContentStudio user={session.user}/> : <Placeholder page={page} setPage={setPage}/>}
+        {page === 'dashboard' ? <Dashboard setPage={setPage}/> : page === 'research' ? <ProductsPage user={session.user}/> : page === 'content' ? <ContentStudio user={session.user}/> : page === 'campaigns' ? <CampaignsPage user={session.user}/> : page === 'analytics' ? <AnalyticsPage user={session.user}/> : <Placeholder page={page} setPage={setPage}/>}
       </div>
       <footer className="app-footer"><span><LayoutDashboard size={13}/> AI Affiliate Studio</span><span>{session.user.email} · <button className="logout-button" onClick={() => supabase.auth.signOut()}><LogOut size={12}/> Keluar</button></span></footer>
     </main>
