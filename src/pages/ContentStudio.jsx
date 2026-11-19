@@ -26,7 +26,7 @@ function makeContent(product, angle, duration) {
     review: 'Sebelum membeli, cek bahan atau spesifikasi, ukuran, ulasan pembeli, serta kecocokannya dengan kebutuhanmu. Jangan lupa bandingkan informasi dari penjual.',
     deal: 'Sebelum checkout, pastikan varian, spesifikasi, ongkir, dan promo yang tersedia. Bandingkan juga dengan toko lain agar mendapat penawaran yang sesuai.',
   }
-  const script = hooks[angle] + '\\n\\n' + middle[angle] + price + '\\n\\nKalau tertarik, cek link produk dan baca detail lengkapnya. Semoga membantu!'
+  const script = hooks[angle] + '\n\n' + middle[angle] + price + '\\n\\nKalau tertarik, cek link produk dan baca detail lengkapnya. Semoga membantu!'
   const caption = name + ' — ' + benefit + '.' + price + ' Cek detail produk melalui link yang tersedia. #affiliate #racunbelanja #rekomendasiproduk'
   const seconds = Number(duration)
   return { hook: hooks[angle], script, caption, hashtags: '#affiliate #rekomendasiproduk #shopeehaul #tiktokshop #belanjapintar', duration: seconds }
@@ -112,8 +112,8 @@ export default function ContentStudio({ user }) {
         <textarea rows="8" value={output.script} onChange={e=>setOutput({...output,script:e.target.value})}/>
       </section>
       <section className="panel content-result-panel">
-        <div className="panel-heading"><div><h3>Caption dan hashtag</h3><p>Caption siap diedit untuk posting.</p></div><button className="secondary-button" onClick={() => copyText(output.caption+'\\n\\n'+output.hashtags,'Caption')}><Copy size={13}/> Salin</button></div>
-        <textarea rows="4" value={output.caption+'\\n\\n'+output.hashtags} readOnly/>
+        <div className="panel-heading"><div><h3>Caption dan hashtag</h3><p>Caption siap diedit untuk posting.</p></div><button className="secondary-button" onClick={() => copyText(output.caption+'\n\n'+output.hashtags,'Caption')}><Copy size={13}/> Salin</button></div>
+        <textarea rows="4" value={output.caption+'\n\n'+output.hashtags} readOnly/>
       </section>
       <p className="content-disclaimer">Draft dibuat dari informasi produk yang kamu simpan. Periksa fakta, harga, klaim manfaat, dan ketentuan platform sebelum dipublikasikan. Generator ini belum menggunakan layanan AI eksternal.</p>
     </div>}
