@@ -97,32 +97,12 @@ export default function ContentStudio({ user }) {
     setNotice('')
     setGenerating(true)
     try {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session?.access_token) throw new Error('Sesi login tidak ditemukan. Silakan masuk kembali.')
-      const response = await fetch('/.netlify/functions/generate-content', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + session.access_token,
-        },
-        body: JSON.stringify({
-          product: {
-            name: selected.name,
-            category: selected.category,
-            notes: selected.notes,
-            platform: selected.platform,
-          },
-          angle,
-          tone,
-          duration,
-        }),
-      })
-      const result = await response.json()
-      if (!response.ok) throw new Error(result.error || 'AI belum bisa membuat konten. Coba lagi.')
-      setOutput(result)
-      setNotice('Konten berhasil dibuat oleh AI. Silakan periksa sebelum dipublikasikan.')
+      // Free local template generator: does not call the OpenAI API.
+      const draft = makeContent(selected, angle, duration, tone)
+      setOutput(draft)
+      setNotice('Draft konten berhasil dibuat dengan mode gratis. Periksa dan sesuaikan fakta produk sebelum dipublikasikan.')
     } catch (err) {
-      setError(err.message || 'Terjadi kendala saat menghubungi AI.')
+      setError(err.message || 'Terjadi kendala saat membuat draft konten.')
     } finally {
       setGenerating(false)
     }
@@ -168,7 +148,7 @@ export default function ContentStudio({ user }) {
           </label>
         </div>
         {selected && <div className="content-product-summary"><b>{selected.name}</b><span>{selected.platform}{selected.category ? ' · '+selected.category : ''}</span></div>}
-        <button className="primary-button" onClick={generate} disabled={generating}>{generating ? <><RefreshCw size={15} className="spin"/> AI sedang menulis...</> : <><Sparkles size={15}/> Buat konten dengan AI</>}</button>
+        <button className="primary-button" onClick={generate} disabled={generating}>{generating ? <><RefreshCw size={15} className="spin"/> AI sedang menulis...</> : <><Sparkles size={15}/> Buat konten gratis</>}</button>
       </>}
     </section>
     {output && <div className="content-results">
@@ -184,7 +164,7 @@ export default function ContentStudio({ user }) {
         <div className="panel-heading"><div><h3>Caption dan hashtag</h3><p>Caption siap diedit untuk posting.</p></div><button className="secondary-button" onClick={() => copyText(output.caption+'\n\n'+output.hashtags,'Caption')}><Copy size={13}/> Salin</button></div>
         <textarea rows="4" value={output.caption+'\n\n'+output.hashtags} readOnly/>
       </section>
-      <p className="content-disclaimer">Konten ditulis oleh AI berdasarkan informasi produk yang tersimpan. Periksa kembali fakta dan klaim sebelum dipublikasikan.</p>
+      <p className="content-disclaimer">Draft dibuat menggunakan template gratis berdasarkan informasi produk yang tersimpan. Periksa kembali fakta dan klaim sebelum dipublikasikan.</p>
     </div>}
   </div>
 }
