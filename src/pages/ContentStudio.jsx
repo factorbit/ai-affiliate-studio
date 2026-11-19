@@ -18,50 +18,50 @@ const tones = {
 function makeContent(product, angle, duration, tone) {
   const name = product.name?.trim() || 'produk ini'
   const category = product.category?.trim() || 'produk pilihan'
-  const kind = category.toLowerCase()
-  const hair = /rambut|hair|kecantikan|beauty|skincare|make.?up|kosmetik/i.test(kind + ' ' + name)
-  const fashion = /fashion|pakaian|baju|sepatu|tas|aksesoris|aksesoris/i.test(kind)
-  const tech = /elektronik|gadget|handphone|komputer|audio|aksesoris hp/i.test(kind)
-  const home = /rumah|dapur|perabot|home|kebersihan/i.test(kind)
-  const food = /makanan|minuman|snack|cemilan|kuliner/i.test(kind)
-
-  const openers = {
-    playful: hair
-      ? 'Jujur, urusan merawat diri tuh kadang bikin banyak pertanyaan. Mulai dari mana dulu, sih? 😭'
-      : fashion
-        ? 'Pernah nggak, sudah punya banyak outfit tapi tetap merasa nggak punya baju? 😭'
-        : tech
-          ? 'Kalau ada barang yang bikin aktivitas lebih praktis, pasti langsung masuk daftar kepo, kan? 👀'
-          : home
-            ? 'Siapa yang suka tergoda barang yang katanya bisa bikin urusan rumah lebih gampang? Ngaku! 😭'
-            : food
-              ? 'Lagi pengin nyobain sesuatu yang baru, tapi bingung mau pilih apa? 👀'
-              : 'Eh, berhenti scroll sebentar! Ada satu produk yang mau aku ajak kamu kepoin. 😭',
-    soft: 'Aku mau berbagi satu produk yang mungkin menarik buat kamu yang sedang mencari ' + kind + '.',
-    honest: 'Sebelum memutuskan membeli sesuatu, ada baiknya kita kenali dulu produknya. Kali ini kita bahas ' + name + '.',
-    hard: 'Lagi cari ' + kind + '? Yuk, luangkan sebentar untuk kenalan dengan ' + name + '!',
+  const details = [product.notes, product.category, product.platform].filter(Boolean).join(', ')
+  const problemByAngle = {
+    problem: 'Pernah mengalami situasi ketika kebutuhan sehari-hari terasa merepotkan, tetapi belum menemukan pilihan yang pas?',
+    benefit: 'Mencari produk yang benar-benar sesuai kebutuhan itu kadang bikin bingung. Banyak pilihan, tetapi detailnya perlu diperiksa satu per satu.',
+    review: 'Sebelum ikut-ikutan membeli karena sedang ramai, ada baiknya kita lihat dulu apa yang ditawarkan dan apakah sesuai kebutuhan.',
+    deal: 'Lagi mempertimbangkan beli produk? Jangan buru-buru checkout sebelum tahu detail pentingnya.',
   }
-  const story = {
-    problem: hair
-      ? 'Memilih produk perawatan itu nggak bisa asal ikut tren. Kebutuhan setiap orang berbeda, jadi penting untuk membaca informasi, mengenali kebutuhan diri, dan memahami cara pakainya.'
-      : 'Sering kali kita tertarik pada suatu barang, tapi belum tentu benar-benar membutuhkannya. Coba pikirkan kebutuhanmu, lalu cocokkan dengan informasi dan fungsi produk yang dijelaskan penjual.',
-    benefit: 'Daripada cuma melihat tampilannya, yuk kenali ' + name + ' lebih dekat. Perhatikan fungsi, detail, bahan atau spesifikasinya, lalu bayangkan apakah memang sesuai dengan kebutuhan sehari-hari.',
-    review: 'Aku nggak mau asal bilang produk ini bagus. Yang perlu kamu cek adalah detail produk, bahan atau spesifikasi, cara penggunaan, serta pengalaman pembeli lain. Cocok atau tidaknya tetap bergantung pada kebutuhan masing-masing.',
-    deal: 'Kalau dari awal sudah menarik perhatianmu, jangan buru-buru checkout. Buka halaman produknya, lihat pilihan yang tersedia, baca ulasan, dan pastikan detailnya sesuai.',
+  const hooks = {
+    playful: 'STOP SCROLL DULU! Kalau kamu sedang mencari ' + category.toLowerCase() + ', ada satu hal yang wajib kamu cek sebelum memilih.',
+    soft: 'Buat kamu yang sedang mencari ' + category.toLowerCase() + ', yuk kenalan dulu dengan satu pilihan ini.',
+    honest: 'Jangan langsung checkout. Kenali dulu ' + name + ' dan cek apakah memang sesuai kebutuhanmu.',
+    hard: 'Lagi cari ' + category.toLowerCase() + '? Simak dulu sampai akhir sebelum menentukan pilihan.',
   }
-  const endings = {
-    playful: 'Intinya, jangan cuma keracunan karena lihat videonya. Kepoin detailnya dulu, baru tentukan pilihan. 😆',
-    soft: 'Kalau setelah melihat detailnya kamu merasa produk ini sesuai, silakan pertimbangkan sebagai salah satu pilihan.',
-    honest: 'Cek informasi dan ulasannya terlebih dahulu. Belanja sesuai kebutuhan selalu lebih baik daripada ikut-ikutan.',
-    hard: 'Kalau penasaran, langsung cek halaman produknya dan lihat sendiri detail lengkapnya!',
-  }
-  const hook = openers[tone] || openers.playful
-  const body = story[angle] || story.benefit
-  const ending = endings[tone] || endings.soft
-  const script = hook + '\n\n' + body + '\n\n' + ending
-  const caption = name + ' ✨\nLagi cari referensi sebelum memutuskan beli? Kenali dulu detail, fungsi, dan ulasan produk ini. Pilih yang paling sesuai dengan kebutuhanmu.'
-  const tags = '#affiliate #rekomendasiproduk #racunbelanja #belanjapintar'
-  return { hook, script, caption, hashtags: tags, duration: Number(duration) }
+  const problem = problemByAngle[angle] || problemByAngle.benefit
+  const bridge = 'Nah, salah satu pilihan yang bisa kamu pertimbangkan adalah ' + name + '.'
+  const factual = details
+    ? 'Informasi yang tersedia: ' + details + '. Cocokkan detail tersebut dengan kebutuhanmu dan baca keterangan lengkap dari penjual.'
+    : 'Buka detail produknya untuk memeriksa fungsi, bahan atau spesifikasi, ukuran atau varian, serta ulasan pembeli. Jangan mengandalkan asumsi.'
+  const solution = 'Cara memilihnya: tentukan dulu kebutuhanmu, periksa detail produk, bandingkan pilihan yang tersedia, lalu pastikan cara pakai atau spesifikasinya cocok.'
+  const retention = duration === '15'
+    ? 'Sebentar lagi, ini yang paling penting: jangan lupa cek detail dan ulasannya sebelum membeli.'
+    : duration === '60'
+      ? 'Tapi tunggu, jangan lewatkan bagian ini. Sebelum memutuskan, bandingkan detailnya dengan kebutuhanmu, cek ulasan terbaru, dan perhatikan pilihan varian yang tersedia. Langkah kecil ini bisa membantumu menghindari salah pilih.'
+      : 'Eits, jangan buru-buru. Ada satu langkah penting: cek ulasan pembeli dan pastikan varian yang kamu pilih benar-benar sesuai.'
+  const benefit = 'Dengan mengecek hal-hal itu lebih dulu, kamu bisa membuat keputusan yang lebih yakin dan sesuai kebutuhan—bukan sekadar ikut tren.'
+  const cta = tone === 'hard'
+    ? 'Kalau tertarik, klik produk atau tautan di keranjang untuk cek harga, varian, dan detail terbarunya sekarang.'
+    : tone === 'playful'
+      ? 'Kepo boleh, checkout jangan asal! Cek detail produknya lewat tautan atau keranjang, lalu pilih kalau memang cocok. 😉'
+      : 'Lihat detail dan ulasan melalui tautan produk. Pertimbangkan untuk membeli jika memang sesuai kebutuhanmu.'
+  const hook = hooks[tone] || hooks.playful
+  const beats = [
+    '[0–3 DETIK | HOOK] ' + hook,
+    '[3–8 DETIK | MASALAH] ' + problem,
+    '[8–15 DETIK | PERKENALAN] ' + bridge,
+    '[15–23 DETIK | SOLUSI] ' + solution,
+    '[TETAP TONTON | DETAIL PENTING] ' + factual,
+    '[MENJELANG AKHIR | RETENSI] ' + retention,
+    '[PENUTUP | AJAKAN] ' + benefit + ' ' + cta,
+  ]
+  const script = beats.join('\n\n')
+  const caption = 'Sedang mencari ' + category.toLowerCase() + '? Kenali ' + name + ' sebelum memilih. Periksa detail, varian, dan ulasan agar sesuai kebutuhanmu. ✨\n\nCek produk melalui tautan/keranjang jika ingin tahu lebih lanjut.'
+  const hashtags = '#affiliate #rekomendasiproduk #tipsbelanja #reviewproduk #racunbelanja'
+  return { hook, script, caption, hashtags, duration: Number(duration) }
 }
 
 export default function ContentStudio({ user }) {
@@ -100,7 +100,7 @@ export default function ContentStudio({ user }) {
       // Free local template generator: does not call the OpenAI API.
       const draft = makeContent(selected, angle, duration, tone)
       setOutput(draft)
-      setNotice('Draft konten berhasil dibuat dengan mode gratis. Periksa dan sesuaikan fakta produk sebelum dipublikasikan.')
+      setNotice('Draft konten berhasil dibuat dengan mode gratis. Periksa fakta produk sebelum dipublikasikan.')
     } catch (err) {
       setError(err.message || 'Terjadi kendala saat membuat draft konten.')
     } finally {
@@ -164,7 +164,7 @@ export default function ContentStudio({ user }) {
         <div className="panel-heading"><div><h3>Caption dan hashtag</h3><p>Caption siap diedit untuk posting.</p></div><button className="secondary-button" onClick={() => copyText(output.caption+'\n\n'+output.hashtags,'Caption')}><Copy size={13}/> Salin</button></div>
         <textarea rows="4" value={output.caption+'\n\n'+output.hashtags} readOnly/>
       </section>
-      <p className="content-disclaimer">Draft dibuat menggunakan template gratis berdasarkan informasi produk yang tersimpan. Periksa kembali fakta dan klaim sebelum dipublikasikan.</p>
+      <p className="content-disclaimer">Naskah dibuat dengan template gratis. Sesuaikan dengan fakta produk; jangan menambahkan klaim yang belum terbukti.</p>
     </div>}
   </div>
 }
