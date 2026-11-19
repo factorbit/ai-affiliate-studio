@@ -6,7 +6,8 @@ import Header from './components/Header'
 import Dashboard from './pages/Dashboard'
 import Placeholder from './pages/Placeholder'
 import Auth from './pages/Auth'
-import ProductsPage from './pages/ProductsPage'\nimport ContentStudio from './pages/ContentStudio'
+import ProductsPage from './pages/ProductsPage'
+import ContentStudio from './pages/ContentStudio'
 
 const titles = { dashboard: 'Dashboard', research: 'Riset Produk', content: 'Studio Konten AI', campaigns: 'Kampanye', analytics: 'Analitik Affiliate', assistant: 'Asisten AI', settings: 'Pengaturan' }
 
