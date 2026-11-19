@@ -8,9 +8,15 @@ const angles = {
   review: 'Review jujur',
   deal: 'Harga dan penawaran',
 }
+const tones = {
+  playful: 'Lucu & nakal',
+  soft: 'Soft selling',
+  honest: 'Review jujur',
+  hard: 'Hard selling',
+}
 const money = value => value == null ? '' : 'Rp ' + Number(value).toLocaleString('id-ID')
 
-function makeContent(product, angle, duration) {
+function makeContent(product, angle, duration, tone) {
   const name = product.name
   const benefit = product.notes?.trim() || product.category?.trim() || 'praktis untuk kebutuhan sehari-hari'
   const price = product.price == null ? '' : ' Harganya sekitar ' + money(product.price) + '.'
@@ -29,13 +35,14 @@ function makeContent(product, angle, duration) {
   const script = hooks[angle] + '\n\n' + middle[angle] + price + '\\n\\nKalau tertarik, cek link produk dan baca detail lengkapnya. Semoga membantu!'
   const caption = name + ' — ' + benefit + '.' + price + ' Cek detail produk melalui link yang tersedia. #affiliate #racunbelanja #rekomendasiproduk'
   const seconds = Number(duration)
-  return { hook: hooks[angle], script, caption, hashtags: '#affiliate #rekomendasiproduk #shopeehaul #tiktokshop #belanjapintar', duration: seconds }
+  return { hook, script, caption, hashtags: '#affiliate #rekomendasiproduk #shopeehaul #tiktokshop #belanjapintar', duration: seconds }
 }
 
 export default function ContentStudio({ user }) {
   const [products, setProducts] = useState([])
   const [selectedId, setSelectedId] = useState('')
   const [angle, setAngle] = useState('benefit')
+  const [tone, setTone] = useState('playful')
   const [duration, setDuration] = useState('30')
   const [output, setOutput] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -61,7 +68,7 @@ export default function ContentStudio({ user }) {
     if (!selected) { setError('Simpan produk terlebih dahulu di menu Riset Produk.'); return }
     setError('')
     setNotice('')
-    setOutput(makeContent(selected, angle, duration))
+    setOutput(makeContent(selected, angle, duration, tone))
   }
 
   async function copyText(value, label) {
@@ -92,6 +99,11 @@ export default function ContentStudio({ user }) {
           <label>Sudut promosi
             <select value={angle} onChange={e => setAngle(e.target.value)}>
               {Object.entries(angles).map(([key,label]) => <option key={key} value={key}>{label}</option>)}
+            </select>
+          </label>
+          <label>Gaya bahasa
+            <select value={tone} onChange={e => setTone(e.target.value)}>
+              {Object.entries(tones).map(([key,label]) => <option key={key} value={key}>{label}</option>)}
             </select>
           </label>
           <label>Durasi video
