@@ -1,14 +1,31 @@
-import { useState } from 'react'
-import { LayoutDashboard } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { LayoutDashboard, LogOut } from 'lucide-react'
+import { supabase, isSupabaseConfigured } from './lib/supabase'
 import Sidebar from './components/Sidebar'
 import Header from './components/Header'
 import Dashboard from './pages/Dashboard'
 import Placeholder from './pages/Placeholder'
+import Auth from './pages/Auth'
 
 const titles = { dashboard: 'Dashboard', research: 'Riset Produk', content: 'Studio Konten AI', campaigns: 'Kampanye', analytics: 'Analitik Affiliate', assistant: 'Asisten AI', settings: 'Pengaturan' }
+
 export default function App() {
   const [page, setPage] = useState('dashboard')
   const [menuOpen, setMenuOpen] = useState(false)
+  const [session, setSession] = useState(null)
+  const [checking, setChecking] = useState(true)
+
+  useEffect(() => {
+    if (!isSupabaseConfigured) { setChecking(false); return }
+    supabase.auth.getSession().then(({ data }) => { setSession(data.session); setChecking(false) })
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => setSession(nextSession))
+    return () => listener.subscription.unsubscribe()
+  }, [])
+
+  if (!isSupabaseConfigured) return <div className="auth-screen"><section className="auth-card"><h1>Koneksi Supabase belum siap</h1><p className="auth-desc">Periksa pengaturan VITE_SUPABASE_URL dan VITE_SUPABASE_ANON_KEY di Netlify.</p></section></div>
+  if (checking) return <div className="auth-screen"><div className="auth-loading">Memeriksa sesi akun...</div></div>
+  if (!session) return <Auth />
+
   return <div className="app-shell">
     <Sidebar page={page} setPage={setPage} open={menuOpen} setOpen={setMenuOpen}/>
     <main className="main-area">
@@ -16,7 +33,7 @@ export default function App() {
       <div className="content-area">
         {page === 'dashboard' ? <Dashboard setPage={setPage}/> : <Placeholder page={page} setPage={setPage}/>}
       </div>
-      <footer className="app-footer"><span><LayoutDashboard size={13}/> AI Affiliate Studio</span><span>Versi awal · 0.1.0</span></footer>
+      <footer className="app-footer"><span><LayoutDashboard size={13}/> AI Affiliate Studio</span><span>{session.user.email} · <button className="logout-button" onClick={() => supabase.auth.signOut()}><LogOut size={12}/> Keluar</button></span></footer>
     </main>
   </div>
 }
