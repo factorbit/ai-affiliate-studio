@@ -32,10 +32,25 @@ function makeContent(product, angle, duration, tone) {
     review: 'Sebelum membeli, cek bahan atau spesifikasi, ukuran, ulasan pembeli, serta kecocokannya dengan kebutuhanmu. Jangan lupa bandingkan informasi dari penjual.',
     deal: 'Sebelum checkout, pastikan varian, spesifikasi, ongkir, dan promo yang tersedia. Bandingkan juga dengan toko lain agar mendapat penawaran yang sesuai.',
   }
-  const script = hooks[angle] + '\n\n' + middle[angle] + price + '\\n\\nKalau tertarik, cek link produk dan baca detail lengkapnya. Semoga membantu!'
-  const caption = name + ' — ' + benefit + '.' + price + ' Cek detail produk melalui link yang tersedia. #affiliate #racunbelanja #rekomendasiproduk'
-  const seconds = Number(duration)
-  return { hook, script, caption, hashtags: '#affiliate #rekomendasiproduk #shopeehaul #tiktokshop #belanjapintar', duration: seconds }
+  const isHair = /rambut|hair|shampoo|sampo|conditioner|serum rambut/i.test(name + ' ' + benefit)
+  const toneHooks = {
+    playful: isHair
+      ? 'Rambut udah diajak kompromi, kok masih drama tiap hari? 😭 Kenalan dulu sama ' + name + '!'
+      : 'Niatnya cuma lihat-lihat, eh malah nemu ' + name + '. Ini sih bikin penasaran! 😭',
+    soft: 'Kalau kamu sedang mencari ' + benefit + ', mungkin ' + name + ' bisa masuk daftar pilihanmu.',
+    honest: 'Sebelum kamu memutuskan beli ' + name + ', yuk cek dulu hal-hal pentingnya.',
+    hard: 'Lagi butuh ' + benefit + '? Jangan lewatkan untuk cek ' + name + ' sekarang!',
+  }
+  const closings = {
+    playful: 'Kalau ternyata cocok sama kebutuhanmu, boleh langsung cek detail produknya. Jangan asal checkout ya, bestie! 😭',
+    soft: 'Kalau terasa sesuai dengan kebutuhanmu, kamu bisa melihat detail produk dan ulasannya lebih lanjut.',
+    honest: 'Cek detail, ulasan pembeli, dan kecocokan produk sebelum memutuskan. Pilih sesuai kebutuhanmu.',
+    hard: 'Klik link produk untuk cek harga, varian, dan promo yang tersedia. Pastikan sebelum checkout!',
+  }
+  const hook = toneHooks[tone] || hooks[angle]
+  const script = hook + '\n\n' + middle[angle] + price + '\n\n' + (closings[tone] || closings.soft)
+  const caption = name + ' — ' + benefit + '.' + price + ' ' + (closings[tone] || closings.soft) + ' #affiliate #racunbelanja #rekomendasiproduk'
+  return { hook, script, caption, hashtags: '#affiliate #rekomendasiproduk #shopeehaul #tiktokshop #belanjapintar', duration: Number(duration) }
 }
 
 export default function ContentStudio({ user }) {
